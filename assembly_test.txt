@@ -1,0 +1,50 @@
+//control hazard test
+li x1,0x80
+bne x1,x0,taken
+li x2,0x56
+li x3,0x5
+li x3,0x6
+li x3,0x7
+taken:
+	li x3,0x8
+//save test
+li x3,0x54325682
+li x4,0x35364732
+sw x4,(0)x0
+sb x3,(0)x0
+sb x3,(1)x0
+sb x3,(2)x0
+sb x3,(3)x0
+sh x3,(0)x0
+sh x3,(1)x0
+sh x3,(2)x0
+sw x3,(3)x0
+//
+load test
+li x3,0x54325682
+sw x3,(3)x0
+lb x3,(0)x0
+lb x3,(1)x0
+lb x3,(2)x0
+lb x3,(3)x0
+lh x3,(0)x0
+lh x3,(1)x0
+lh x3,(2)x0
+lh x3,(3)x0
+//R type
+li x1,6
+li x2,-3
+add x3,x1,x2
+sub x3,x1,x2
+sll x3,x2,x1
+slt x3,x1,x2
+sltu x3,x1,x2
+srl x3,x2,x1
+//I type
+li x1,6
+addi x3,x1,-3	
+slli x3,x1,2
+slti x3,x1,-3
+sltiu x3,x1,-3
+srli x3,x1,2
+
