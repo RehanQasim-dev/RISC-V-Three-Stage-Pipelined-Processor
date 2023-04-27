@@ -1,3 +1,18 @@
+//jal
+li x1,0x8
+jal x2,label
+li x1,0x6
+li x1,0x7
+label:
+	addi x3,x2,0x5
+//load use hazard
+li x1,0x8
+sw x1,(0)x0
+li x2,0x12
+nop
+lw x2,(0)x0
+add x3,x2,x2
+
 //control hazard test
 li x1,0x80
 bne x1,x0,taken

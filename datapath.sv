@@ -26,7 +26,7 @@ module datapath (
   logic [4:0] rs2, rs1, rd_wb;
   logic forw_a, forw_b, flush;
   logic [31:0] epc;
-  logic epc_taken;
+  logic epc_taken, loaded;
   assign rs1 = instruction[19:15];
   assign rs2 = instruction[24:20];
   assign rd_wb = instruction_wb[11:7];
@@ -82,19 +82,21 @@ module datapath (
       .instruction(instruction_wb),
       .wdata(wdata),
       .epc(epc),
-      .epc_taken(epc_taken)
+      .epc_taken(epc_taken),
+      .loaded(loaded)
   );
   Hazard_detection Hazard_detection_instance (
       .reg_wr(reg_wr),
       .mem_read(mem_read),
+      .loaded(loaded),
       .PC_sel(PC_sel),
       .raddr1(rs1),
       .raddr2(rs2),
       .rd_wb(rd_wb),
-
+      .wb_sel(wb_sel),
       .forw_a(forw_a),
       .forw_b(forw_b),
-      .flush (flush),
-      .stall (stall)
+      .flush(flush),
+      .stall(stall)
   );
 endmodule

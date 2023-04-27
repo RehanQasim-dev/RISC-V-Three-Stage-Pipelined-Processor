@@ -17,7 +17,8 @@ module wb_stage (
     logic [3:0] interrupt,
     output logic [31:0] wdata,
     epc,
-    output logic epc_taken
+    output logic epc_taken,
+    loaded
 );
   logic [31:0] mem_data, csr_read_data;
   logic [ 2:0] func3;
@@ -43,10 +44,15 @@ module wb_stage (
       default: wdata = 'x;
     endcase
   end
+  always_ff @(posedge clk) begin
+    if (wb_sel == 2'b01) loaded <= 1'b0;
+    else loaded <= loaded + 1'b1;
+  end
   data_mem data_mem_instance (
       .clk(clk),
       .rst(rst),
       .mem_wr(mem_wr),
+      .mem_read(mem_read),
       .addr(ALU_o),
       .data_wr(data_to_mem),
       .func3(func3),
