@@ -20,7 +20,7 @@ module CSR_reg (
   localparam mip_addr = 12'h344;
   localparam mtvec_addr = 12'h305;
   localparam mie_addr = 12'h304;
-  localparam mstatus_addr = 12'h304;
+  localparam mstatus_addr = 12'h300;
   assign timer_inter = mip_q[7] & mie_q[7];
   assign external_inter = mip_q[11] & mie_q[11];
   assign interupt_taken = (timer_inter | external_inter) & mstatus_q[3];

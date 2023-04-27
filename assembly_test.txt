@@ -1,3 +1,14 @@
+//csr
+li x1,0x58
+li x2,0x80
+csrrw x3,mstatus,x1
+csrrw x3,mstatus,x1
+csrrw x3,mie,x2
+csrrw x3,mie,x2
+csrrw x3,mtvec,x1
+csrrw x3,mtvec,x1
+end:
+    j end
 //jal
 li x1,0x8
 jal x2,label

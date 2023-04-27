@@ -198,10 +198,10 @@ module Controller (
         A_sel = 1;
         B_sel = 1'bx;
         wb_sel = 2'b11;
-        reg_wr = 1;
+        reg_wr = 1'b1;
         ALUctrl = 4'd0;
         PC_sel = 1'b0;
-        case ({
+        casex ({
           func7_mret, func3
         })
           4'b1000: begin
