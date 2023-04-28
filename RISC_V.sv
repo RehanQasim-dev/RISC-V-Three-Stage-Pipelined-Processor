@@ -1,14 +1,18 @@
 `include "datapath.sv"
 `include "Controller.sv"
+`include "timer.sv"
 module RISC_V (
     input logic clk,
     input logic rst,
-    input logic [3:0] interrupt
+    timer_en,
+    ext_inter
 );
   logic [31:0] instruction;
+  logic [ 3:0] interrupt;
   logic
       flush,
       stall,
+      ovf,
       mem_read,
       reg_wr,
       A_sel,
@@ -61,5 +65,23 @@ module RISC_V (
       .main_flush(flush),
       .stall(stall)
   );
+  always_comb begin
 
+    case ({
+      ext_inter, ovf
+    })
+      2'b00: interrupt = 4'b0000;
+      2'b01: interrupt = 4'b0001;
+      2'b10: interrupt = 4'b0010;
+      2'b11: interrupt = 4'b0001;
+    endcase
+  end
+  timer #(
+      .WIDTH(4)
+  ) timer_instance (
+      .clk(clk),
+      .rst(rst),
+      .en (timer_en),
+      .ovf(ovf)
+  );
 endmodule

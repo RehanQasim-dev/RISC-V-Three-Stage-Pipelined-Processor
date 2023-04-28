@@ -1,3 +1,32 @@
+j main
+j end
+j end
+j end
+j end
+j end
+j end
+j end
+j timer_handler
+j end
+j end
+j end
+j external_handler
+main:
+li x11,0x80
+li x12,0x8
+li x13,0x4
+csrrw x0,mie,x11
+csrrw x0,mstatus,x12
+csrrw x0,mtvec,x13
+end:
+    j end
+timer_handler:
+    li x3,0x5
+    mret
+external_handler:
+    li x3,0x6
+    mret
+
 //csr
 li x1,0x58
 li x2,0x80

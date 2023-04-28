@@ -12,8 +12,9 @@ module Fetch (
     output logic [31:0] instruction_ppl,
     PC_ppl
 );
+
   logic not_stalled;
-  logic [31:0] PC, PC_mux_o;
+  logic [31:0] PC, PC_mux_o, PC_ppl_in;
   logic [31:0] instruction;
   assign not_stalled = !stall;
   Instrmem Instrmem_instance (
@@ -25,12 +26,13 @@ module Fetch (
     else if (not_stalled) PC <= PC_mux_o;
   end
 
-  assign PC_mux_o = epc_taken ? epc : (PC_sel ? ALU_o : PC + 4);
+  assign PC_mux_o  = epc_taken ? epc : (PC_sel ? ALU_o : PC + 4);
+  assign PC_ppl_in = flush ? ALU_o : PC;
   Pipeline_reg Pipieline_reg_instance (
       .clk(clk),
-      .flush(flush),
+      .flush(rst),
       .stall(stall),
-      .in(PC),
+      .in(PC_ppl_in),
       .out(PC_ppl)
   );
   Pipeline_reg Pipieline_reg_instance2 (

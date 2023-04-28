@@ -1,12 +1,13 @@
 `include "RISC_V.sv"
 
 module RISC_V_tb;
-  logic rst, clk;
+  logic rst, clk, ext_inter, timer_en;
   logic [3:0] interrupt;
   RISC_V DUT (
       .clk(clk),
       .rst(rst),
-      .interrupt(interrupt)
+      .ext_inter(ext_inter),
+      .timer_en(timer_en)
   );
   //clock generation
   localparam CLK_PERIOD = 2;
@@ -21,19 +22,22 @@ module RISC_V_tb;
 
   initial begin
     rst = 1;
-    interrupt = 4'b0000;
+    timer_en = 0;
+    ext_inter = 0;
     @(posedge clk);
     rst = 0;
-    repeat (4) @(posedge clk);
-    interrupt = 4'b0000;
-    repeat (6) @(posedge clk);
+    repeat (10) @(posedge clk);
+    timer_en = 1'b1;
+    repeat (11) @(posedge clk);
+    timer_en = 1'b0;
+    repeat (22) @(posedge clk);
     $finish;
   end
 
   //Monitor values at posedge
   always @(posedge clk) begin
     $strobe(
-        "PC=%0d\tFlush=%0d\tstall=%d\tinstr=%h|\nPC=%0d\tinstr=%h\tx1=%0h\tx2=%0h\tx3=%0h\tA=%h\tB=%h\tforw_a=%0d\tforw_b=%0d|\nPC=%0d\tALU_o=%0h\twb_data=%h\tmem=%h\tregwr=%b\twb_sel=%b\tPC_sel=%b\nmem_wr=%b\tdata_to_wr=%h\nmie_wr_flag=%0h\tinterupt_taken=%0h\tmstatus_wr_flag=%0h\tmtvec_wr_flag=%0h\ttimer_inter=%0h\texternal_inter=%0h\nmepc_q=%0h\tmie_q=%0h\tmstatus_q=%0h\tmtvec_q=%0h\tmcause_q=%0h\tmip_q=%0h\nISR_addr=%0b\tcsr_addr=%0h\tepc=%0h\tepc_taken=%0h",
+        "PC=%0d\tFlush=%0d\tstall=%d\tinstr=%h|\nPC=%0d\tinstr=%h\tx1=%0h\tx2=%0h\tx3=%0h\tA=%h\tB=%h\tforw_a=%0d\tforw_b=%0d|\nPC=%0d\tALU_o=%0h\twb_data=%h\tmem=%h\tregwr=%b\twb_sel=%b\tPC_sel=%b\nmem_wr=%b\tdata_to_wr=%h\nmie_wr_flag=%0h\tinterupt_taken=%0h\tmstatus_wr_flag=%0h\tmtvec_wr_flag=%0h\ttimer_inter=%0h\texternal_inter=%0h\nmepc_q=%0d\tmie_q=%0h\tmstatus_q=%0h\tmtvec_q=%0h\tmcause_q=%0h\tmip_q=%0h\nISR_addr=%0b\tcsr_addr=%0h\tepc=%0d\tepc_taken=%0h",
         DUT.datapath.Fetch.PC, DUT.datapath.flush, DUT.datapath.stall,
         DUT.datapath.Fetch.instruction, DUT.datapath.Decode_instance.PC,
         DUT.datapath.Decode_instance.instruction,
@@ -60,6 +64,7 @@ module RISC_V_tb;
         DUT.datapath.wb_stage_instance.CSR_reg_instance.addr,
         DUT.datapath.wb_stage_instance.CSR_reg_instance.epc,
         DUT.datapath.wb_stage_instance.CSR_reg_instance.epc_taken);
+    $strobe("ovf", DUT.ovf);
     // $strobe("--CSR--");
     // $strobe(
     //     "mie_wr_flag=%0h\tinterupt_taken=%0h\tmstatus_wr_flag=%0h\tmtvec_wr_flag=%0h\ttimer_inter=%0h\texternal_inter=%0h\nmepc_q=%0h\tmie_q=%0h\tmstatus_q=%0h\tmtvec_q=%0h\tmcause_q=%0hmip_q=%0h\t\tISR_addr=%0h",

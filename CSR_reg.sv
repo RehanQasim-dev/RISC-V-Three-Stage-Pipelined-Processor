@@ -53,6 +53,7 @@ module CSR_reg (
   end
   always_ff @(posedge clk) begin
     if (rst) mip_q <= '0;
+    else if (interupt_taken) mip_q <= '0;
     else mip_q <= mip_d;
   end
   //

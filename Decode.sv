@@ -32,7 +32,7 @@ module Decode (
   localparam Jalr_type = 5'b11001;
   localparam lui_type = 5'b01101;
   localparam auipc_type = 5'b00101;
-  logic [31:0] rdata1, rdata2, rdata1_, rdata2_, imm, ALU_op_b, ALU_op_a, ALU_o;
+  logic [31:0] rdata1, PC_ppl_in, rdata2, rdata1_, rdata2_, imm, ALU_op_b, ALU_op_a, ALU_o;
   logic [4:0] raddr1, raddr2, waddr_ppl;
   logic [2:0] func3;
   assign func3 = instruction[14:12];
@@ -43,11 +43,12 @@ module Decode (
   assign ALU_op_a = A_sel ? rdata1_ : PC;
   assign ALU_op_b = B_sel ? imm : rdata2_;
   assign waddr_ppl = instruction_ppl[11:7];
+  assign PC_ppl_in = flush ? ALU_ppl : PC;
   Pipeline_reg Pipeline_reg_instance (
       .clk(clk),
-      .flush(flush),
+      .flush(rst),
       .stall(stall),
-      .in(PC),
+      .in(PC_ppl_in),
       .out(PC_ppl)
   );
   Pipeline_reg #(

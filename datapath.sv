@@ -90,6 +90,7 @@ module datapath (
       .mem_read(mem_read),
       .loaded(loaded),
       .PC_sel(PC_sel),
+      .epc_taken(epc_taken),
       .raddr1(rs1),
       .raddr2(rs2),
       .rd_wb(rd_wb),
