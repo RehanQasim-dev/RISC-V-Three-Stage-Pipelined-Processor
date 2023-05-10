@@ -56,25 +56,21 @@ module LS_controller (
         load_ctrl = 3'b001;
       end
       w: begin
-        $display("hello1");
         mask = 4'b1111;
         wdata_mem = rdata2;
         load_ctrl = 3'b010;
       end
       bu: begin
-        $display("hello2");
         mask = 'x;
         wdata_mem = rdata2;
         load_ctrl = 3'b011;
       end
       hu: begin
-        $display("hello3");
         mask = 'x;
         wdata_mem = rdata2;
         load_ctrl = 3'b100;
       end
       default: begin
-        $display("hello4,func3=%d", func3);
         mask = 'x;
         wdata_mem = rdata2;
         load_ctrl = 3'b100;

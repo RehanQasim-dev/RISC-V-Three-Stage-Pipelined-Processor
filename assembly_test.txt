@@ -21,10 +21,14 @@ csrrw x0,mtvec,x13
 end:
     j end
 timer_handler:
+    csrrw x0,mie,x0
     li x3,0x5
+    csrrw x0,mie,x11
     mret
 external_handler:
+    csrrw x0,mie,x0
     li x3,0x6
+    csrrw x0,mie,x11
     mret
 
 //csr

@@ -20,7 +20,8 @@ module datapath (
     output logic [31:0] instruction,
     output logic br_taken,
     main_flush,
-    stall
+    stall,
+    output logic [31:0] result
 );
   logic [31:0] PC_decode, PC_wb, ALU_wb, wdata, data_to_mem, instruction_wb, rdata1_wb;
   logic [4:0] rs2, rs1, rd_wb;
@@ -83,7 +84,8 @@ module datapath (
       .wdata(wdata),
       .epc(epc),
       .epc_taken(epc_taken),
-      .loaded(loaded)
+      .loaded(loaded),
+      .result(result)
   );
   Hazard_detection Hazard_detection_instance (
       .reg_wr(reg_wr),

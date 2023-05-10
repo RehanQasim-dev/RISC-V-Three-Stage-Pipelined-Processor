@@ -20,7 +20,7 @@ module Regfile (
   assign rs1_out = valid_add1 ? mem[rs1_in] : '0;
   assign rs2_out = valid_add2 ? mem[rs2_in] : '0;
   initial begin
-    $readmemh("registervalues.txt", mem);
+    $readmemh("registervalues.mem", mem);
   end
   always_ff @(negedge clk)
     if (rst) begin

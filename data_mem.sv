@@ -7,7 +7,8 @@ module data_mem (
     data_wr,
     input logic [2:0] func3,
     input logic [1:0] mem_col,
-    output logic [31:0] mem_data
+    output logic [31:0] mem_data,
+    output logic [31:0] result
 );
   logic [ 3:0] mask;
   logic [ 2:0] load_ctrl;
@@ -23,12 +24,14 @@ module data_mem (
   logic [31:0] mem_data_read;
   logic [31:0] mem[0:31];
   assign mem_data_read = mem_read ? mem[addr[6:2]] : '0;
-
+  assign result = mem[0];
   //Writting data to Memory
+  initial begin
+    $readmemh("data_mem.mem", mem);
+  end
   always_ff @(posedge clk) begin
     if (rst) mem <= '{default: '0};
     else if (mem_wr) begin
-      $display("mask=%b datawr=%h", mask, data_wr);
       if (mask[0]) begin
         mem[addr[31:2]][7:0] <= data_wr_gen[7:0];
       end
@@ -36,7 +39,6 @@ module data_mem (
         mem[addr[31:2]][15:8] <= data_wr_gen[15:8];
       end
       if (mask[2]) begin
-        $display("mask2=%b", mask[3]);
         mem[addr[31:2]][23:16] <= data_wr_gen[23:16];
       end
       if (mask[3]) begin

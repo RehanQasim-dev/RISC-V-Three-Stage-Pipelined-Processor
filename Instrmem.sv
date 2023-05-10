@@ -3,7 +3,7 @@ module Instrmem (
     output logic [31:0] instruction_o
 );
   initial begin
-    $readmemh("instructions.txt", instrmem);
+    $readmemh("instructions.mem", instrmem);
   end
   logic [31:0] instrmem[0:31];
   assign instruction_o = instrmem[addr_i[6:2]];

@@ -18,7 +18,8 @@ module wb_stage (
     output logic [31:0] wdata,
     epc,
     output logic epc_taken,
-    loaded
+    loaded,
+    output logic [31:0] result
 );
   logic [31:0] mem_data, csr_read_data;
   logic [ 2:0] func3;
@@ -57,7 +58,8 @@ module wb_stage (
       .data_wr(data_to_mem),
       .func3(func3),
       .mem_col(mem_col),
-      .mem_data(mem_data)
+      .mem_data(mem_data),
+      .result(result)
   );
   CSR_reg CSR_reg_instance (
       .clk(clk),

@@ -83,7 +83,6 @@ module Controller (
           4'bX111: ALUctrl = 4'd9;  //AND
           default: begin
             ALUctrl = 4'bXXXX;
-            $display("run %b%b", func7, func3);
           end
         endcase
         mem_wr = 0;
@@ -225,6 +224,7 @@ module Controller (
         mem_wr = '0;
         mem_read = '0;
         B_sel = 'x;
+        A_sel = 'x;
         wb_sel = 'x;
         reg_wr = '0;
         ALUctrl = '0;

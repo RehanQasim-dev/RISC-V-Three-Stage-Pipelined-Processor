@@ -5,7 +5,8 @@ module RISC_V (
     input logic clk,
     input logic rst,
     timer_en,
-    ext_inter
+    ext_inter,
+    output logic [31:0] result
 );
   logic [31:0] instruction;
   logic [ 3:0] interrupt;
@@ -63,7 +64,8 @@ module RISC_V (
       .instruction(instruction),
       .br_taken(br_taken),
       .main_flush(flush),
-      .stall(stall)
+      .stall(stall),
+      .result(result)
   );
   always_comb begin
 
@@ -84,4 +86,5 @@ module RISC_V (
       .en (timer_en),
       .ovf(ovf)
   );
+
 endmodule

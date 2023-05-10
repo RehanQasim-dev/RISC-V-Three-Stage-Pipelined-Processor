@@ -13,5 +13,4 @@ module timer #(
     else if (ovf) count <= '0;
     else if (en) count <= count + 1'b1;
   end
-
 endmodule
