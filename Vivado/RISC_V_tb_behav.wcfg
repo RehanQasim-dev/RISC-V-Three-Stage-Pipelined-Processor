@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wave_config>
+   <wave_state>
+   </wave_state>
+   <db_ref_list>
+      <db_ref path="RISC_V_tb_behav.wdb" id="1">
+         <top_modules>
+            <top_module name="RISC_V_tb" />
+            <top_module name="glbl" />
+         </top_modules>
+      </db_ref>
+   </db_ref_list>
+   <zoom_setting>
+      <ZoomStartTime time="15641fs"></ZoomStartTime>
+      <ZoomEndTime time="29272fs"></ZoomEndTime>
+      <Cursor1Time time="27000fs"></Cursor1Time>
+   </zoom_setting>
+   <column_width_setting>
+      <NameColumnWidth column_width="303"></NameColumnWidth>
+      <ValueColumnWidth column_width="195"></ValueColumnWidth>
+   </column_width_setting>
+   <WVObjectSize size="23" />
+   <wvobject fp_name="/RISC_V_tb/rst" type="logic">
+      <obj_property name="ElementShortName">rst</obj_property>
+      <obj_property name="ObjectShortName">rst</obj_property>
+   </wvobject>
+   <wvobject fp_name="/RISC_V_tb/clk" type="logic">
+      <obj_property name="ElementShortName">clk</obj_property>
+      <obj_property name="ObjectShortName">clk</obj_property>
+   </wvobject>
+   <wvobject fp_name="/RISC_V_tb/CLK_PERIOD" type="array">
+      <obj_property name="ElementShortName">CLK_PERIOD[31:0]</obj_property>
+      <obj_property name="ObjectShortName">CLK_PERIOD[31:0]</obj_property>
+   </wvobject>
+   <wvobject type="divider" fp_name="divider41">
+      <obj_property name="label">Fetch</obj_property>
+      <obj_property name="DisplayName">label</obj_property>
+   </wvobject>
+   <wvobject fp_name="/RISC_V_tb/DUT/datapath/Fetch/PC" type="array">
+      <obj_property name="ElementShortName">PC[31:0]</obj_property>
+      <obj_property name="ObjectShortName">PC[31:0]</obj_property>
+   </wvobject>
+   <wvobject type="divider" fp_name="divider57">
+      <obj_property name="label">Decoder&amp;Exec</obj_property>
+      <obj_property name="DisplayName">label</obj_property>
+   </wvobject>
+   <wvobject fp_name="/RISC_V_tb/DUT/datapath/Decode_instance/PC" type="array">
+      <obj_property name="ElementShortName">PC[31:0]</obj_property>
+      <obj_property name="ObjectShortName">PC[31:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/RISC_V_tb/DUT/datapath/Decode_instance/instruction" type="array">
+      <obj_property name="ElementShortName">instruction[31:0]</obj_property>
+      <obj_property name="ObjectShortName">instruction[31:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/RISC_V_tb/DUT/datapath/Decode_instance/raddr1" type="array">
+      <obj_property name="ElementShortName">raddr1[4:0]</obj_property>
+      <obj_property name="ObjectShortName">raddr1[4:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/RISC_V_tb/DUT/datapath/Decode_instance/raddr2" type="array">
+      <obj_property name="ElementShortName">raddr2[4:0]</obj_property>
+      <obj_property name="ObjectShortName">raddr2[4:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/RISC_V_tb/DUT/datapath/Decode_instance/rdata1_forwarded" type="array">
+      <obj_property name="ElementShortName">rdata1_forwarded[31:0]</obj_property>
+      <obj_property name="ObjectShortName">rdata1_forwarded[31:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/RISC_V_tb/DUT/datapath/Decode_instance/rdata2_forwarded" type="array">
+      <obj_property name="ElementShortName">rdata2_forwarded[31:0]</obj_property>
+      <obj_property name="ObjectShortName">rdata2_forwarded[31:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/RISC_V_tb/DUT/datapath/Decode_instance/A_sel" type="logic">
+      <obj_property name="ElementShortName">A_sel</obj_property>
+      <obj_property name="ObjectShortName">A_sel</obj_property>
+   </wvobject>
+   <wvobject fp_name="/RISC_V_tb/DUT/datapath/Decode_instance/B_sel" type="logic">
+      <obj_property name="ElementShortName">B_sel</obj_property>
+      <obj_property name="ObjectShortName">B_sel</obj_property>
+   </wvobject>
+   <wvobject fp_name="/RISC_V_tb/DUT/datapath/Decode_instance/forw_a" type="logic">
+      <obj_property name="ElementShortName">forw_a</obj_property>
+      <obj_property name="ObjectShortName">forw_a</obj_property>
+   </wvobject>
+   <wvobject fp_name="/RISC_V_tb/DUT/datapath/Decode_instance/forw_b" type="logic">
+      <obj_property name="ElementShortName">forw_b</obj_property>
+      <obj_property name="ObjectShortName">forw_b</obj_property>
+   </wvobject>
+   <wvobject fp_name="/RISC_V_tb/DUT/datapath/Decode_instance/ALU_op_a" type="array">
+      <obj_property name="ElementShortName">ALU_op_a[31:0]</obj_property>
+      <obj_property name="ObjectShortName">ALU_op_a[31:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/RISC_V_tb/DUT/datapath/Decode_instance/ALU_op_b" type="array">
+      <obj_property name="ElementShortName">ALU_op_b[31:0]</obj_property>
+      <obj_property name="ObjectShortName">ALU_op_b[31:0]</obj_property>
+   </wvobject>
+   <wvobject type="divider" fp_name="divider58">
+      <obj_property name="label">Mem&amp;Wr_back</obj_property>
+      <obj_property name="DisplayName">label</obj_property>
+   </wvobject>
+   <wvobject fp_name="/RISC_V_tb/DUT/datapath/wb_stage_instance/ALU_o" type="array">
+      <obj_property name="ElementShortName">ALU_o[31:0]</obj_property>
+      <obj_property name="ObjectShortName">ALU_o[31:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/RISC_V_tb/DUT/datapath/wb_stage_instance/wb_sel" type="array">
+      <obj_property name="ElementShortName">wb_sel[1:0]</obj_property>
+      <obj_property name="ObjectShortName">wb_sel[1:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/RISC_V_tb/DUT/datapath/wb_stage_instance/PC" type="array">
+      <obj_property name="ElementShortName">PC[31:0]</obj_property>
+      <obj_property name="ObjectShortName">PC[31:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/RISC_V_tb/DUT/datapath/wb_data" type="array">
+      <obj_property name="ElementShortName">wb_data[31:0]</obj_property>
+      <obj_property name="ObjectShortName">wb_data[31:0]</obj_property>
+   </wvobject>
+</wave_config>
