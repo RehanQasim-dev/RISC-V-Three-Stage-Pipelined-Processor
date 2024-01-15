@@ -30,7 +30,7 @@ module Fetch (
   assign PC_ppl_in = flush ? ALU_o : PC;
   Pipeline_reg Pipieline_reg_instance (
       .clk(clk),
-      .flush(rst),
+      .flush(rst),  //rst is used to flush
       .stall(stall),
       .in(PC_ppl_in),
       .out(PC_ppl)

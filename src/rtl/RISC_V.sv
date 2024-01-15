@@ -6,6 +6,10 @@ module RISC_V (
     input logic rst,
     timer_en,
     ext_inter,
+    gemm_done,
+    output logic gemm_valid,
+    output logic [31:0] gemm_rdata1,
+    gemm_rdata2,
     output logic [31:0] result
 );
   logic [31:0] instruction;
@@ -26,6 +30,7 @@ module RISC_V (
       is_mret;
   logic [1:0] wb_sel;
   logic [3:0] ALUctrl;
+  logic is_GemmInstr;
   Controller Controller (
       .clk(clk),
       .rst(rst),
@@ -33,18 +38,21 @@ module RISC_V (
       .instruction(instruction),
       .br_taken(br_taken),
       .flush(flush),
+      .gemm_done(gemm_done),
       .ALUctrl(ALUctrl),
       .mem_wr_ppl(mem_wr),
       .mem_read_ppl(mem_read),
       .A_sel(A_sel),
       .B_sel(B_sel),
-      .wb_sel_ppl(wb_sel),
       .reg_wr_ppl(reg_wr),
       .PC_sel_ppl(PC_sel),
+      .is_mret_ppl(is_mret),
       .csr_reg_r_ppl(csr_reg_r),
       .csr_reg_wr_ppl(csr_reg_wr),
-      .is_mret_ppl(is_mret)
+      .is_GemmInstr_ppl(is_GemmInstr),
+      .wb_sel_ppl(wb_sel)
   );
+
 
   datapath datapath (
       .clk(clk),
@@ -61,11 +69,16 @@ module RISC_V (
       .interrupt(interrupt),
       .wb_sel(wb_sel),
       .ALUctrl(ALUctrl),
+      .is_GemmInstr(is_GemmInstr),
+      .gemm_done(gemm_done),
       .instruction(instruction),
       .br_taken(br_taken),
       .main_flush(flush),
       .stall(stall),
-      .result(result)
+      .result(result),
+      .data_to_mem(gemm_rdata2),
+      .rdata1_wb(gemm_rdata1),
+      .gemm_valid(gemm_valid)
   );
   always_comb begin
 

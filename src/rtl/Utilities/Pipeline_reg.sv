@@ -8,10 +8,10 @@ module Pipeline_reg #(
     input logic [WIDTH-1:0] in,
     output logic [WIDTH-1:0] out
 );
-  logic not_stalled;
-  assign not_stalled = !stall;
+
   always_ff @(posedge clk) begin
     if (flush) out <= WIDTH'(reset);
-    else if (not_stalled) out <= in;
+    else if (!stall) out <= in;
   end
+
 endmodule

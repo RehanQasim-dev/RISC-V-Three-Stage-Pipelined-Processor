@@ -33,7 +33,8 @@ module Decode (
   localparam Jalr_type = 5'b11001;
   localparam lui_type = 5'b01101;
   localparam auipc_type = 5'b00101;
-  logic [31:0] rdata1, PC_ppl_in, rdata2, rdata1_forwarded, rdata2_forwarded, imm, ALU_op_b, ALU_op_a, ALU_o;
+  logic [31:0]
+      rdata1, PC_ppl_in, rdata2, rdata1_forwarded, rdata2_forwarded, imm, ALU_op_b, ALU_op_a, ALU_o;
   logic [4:0] raddr1, raddr2, waddr_ppl;
   logic [2:0] func3;
   assign func3 = instruction[14:12];
@@ -45,7 +46,7 @@ module Decode (
   assign ALU_op_b = B_sel ? imm : rdata2_forwarded;
   assign waddr_ppl = instruction_ppl[11:7];
   assign PC_ppl_in = flush ? ALU_ppl : PC;
-  Pipeline_reg Pipeline_reg_instance (
+  Pipeline_reg decode_exec_PC (
       .clk(clk),
       .flush(rst),
       .stall(stall),
@@ -54,28 +55,28 @@ module Decode (
   );
   Pipeline_reg #(
       .reset(0)
-  ) Pipeline2 (
+  ) decode_exec_alu (
       .clk(clk),
       .flush(flush),
       .stall(stall),
       .in(ALU_o),
       .out(ALU_ppl)
   );
-  Pipeline_reg Pipieline3 (
+  Pipeline_reg DecEXE_rdata2_forwarded (
       .clk(clk),
       .flush(flush),
       .stall(stall),
       .in(rdata2_forwarded),
       .out(rdata2_forwarded_ppl)
   );
-  Pipeline_reg Pipieline5 (
+  Pipeline_reg DecEXE_rdata1_forwarded (
       .clk(clk),
       .flush(flush),
       .stall(stall),
       .in(rdata1_forwarded),
       .out(rdata1_forwarded_ppl)
   );
-  Pipeline_reg Pipeline4 (
+  Pipeline_reg DecEXE_Instr (
       .clk(clk),
       .flush(flush),
       .stall(stall),

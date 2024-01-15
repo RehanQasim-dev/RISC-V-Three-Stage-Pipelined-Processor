@@ -14,16 +14,21 @@ module datapath (
     csr_reg_r,
     csr_reg_wr,
     is_mret,
-    logic [3:0] interrupt,
+    input logic [3:0] interrupt,
     input logic [1:0] wb_sel,
     input logic [3:0] ALUctrl,
+    input logic is_GemmInstr,
+    gemm_done,
     output logic [31:0] instruction,
     output logic br_taken,
     main_flush,
     stall,
-    output logic [31:0] result
+    output logic [31:0] result,
+    data_to_mem,
+    rdata1_wb,
+    output logic gemm_valid
 );
-  logic [31:0] PC_decode, PC_wb, ALU_wb, wb_data, data_to_mem, instruction_wb, rdata1_wb;
+  logic [31:0] PC_decode, PC_wb, ALU_wb, wb_data, instruction_wb;
   logic [4:0] rs2, rs1, rd_wb;
   logic forw_a, forw_b, flush;
   logic [31:0] epc;
@@ -32,6 +37,7 @@ module datapath (
   assign rs2 = instruction[24:20];
   assign rd_wb = instruction_wb[11:7];
   assign main_flush = flush | rst;
+  logic wait_for_gemm;
   Fetch Fetch (
       .clk(clk),
       .rst(rst),
@@ -97,9 +103,19 @@ module datapath (
       .raddr2(rs2),
       .rd_wb(rd_wb),
       .wb_sel(wb_sel),
+      .wait_for_gemm(wait_for_gemm),
       .forw_a(forw_a),
       .forw_b(forw_b),
       .flush(flush),
       .stall(stall)
+  );
+
+  Rocc_Controller Rocc_Controller_instance (
+      .clk(clk),
+      .rst(rst),
+      .is_GemmInstr(is_GemmInstr),
+      .done(gemm_done),
+      .stall(wait_for_gemm),
+      .valid(gemm_valid)
   );
 endmodule

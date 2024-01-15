@@ -1,11 +1,21 @@
-//`include "CEP.sv"
-
-module RISC_V_tb;
-  logic rst, clk;
+module tb_RISCV;
+  logic rst, clk, ext_inter, timer_en;
+  logic [31:0] result;
+  logic gemm_valid, gemm_done;
+  logic [31:0] gemm_rdata1;
+  logic [31:0] gemm_rdata2;
   RISC_V DUT (
       .clk(clk),
-      .rst(rst)
+      .rst(rst),
+      .timer_en(timer_en),
+      .ext_inter(ext_inter),
+      .gemm_done(gemm_done),
+      .gemm_valid(gemm_valid),
+      .gemm_rdata1(gemm_rdata1),
+      .gemm_rdata2(gemm_rdata2),
+      .result(result)
   );
+
   //clock generation
   localparam CLK_PERIOD = 2;
   initial begin
@@ -18,17 +28,25 @@ module RISC_V_tb;
   //Testbench
 
   initial begin
-    rst <= 1;
+    rst <= 1'b1;
+    timer_en <= 0;
+    ext_inter <= 0;
+    gemm_done <= 1;
     @(posedge clk);
-    rst <= 0;
-    repeat (50) @(posedge clk);
+    rst <= 1'b0;
+    @(posedge clk);
+    @(posedge gemm_valid);
+    gemm_done <= 0;
+    repeat (5) @(posedge clk);
+    gemm_done <= 1;
+    repeat (20) @(posedge clk);
     $finish;
   end
   //Monitor values at posedge
-  always @(posedge clk) begin
+  always @(posedge DUT.clk) begin
     $strobe(
-        "PC=%0d\tFlush=%0d\tstall=%d\tinstr=%h|\nPC=%0d\tinstr=%h\tx1=%0h\tx2=%0h\tx3=%0h\tA=%h\tB=%h\tforw_a=%0d\tforw_b=%0d|\nPC=%0d\tALU_o=%0h\twb_data=%h\tmem=%h\tregwr=%b\twb_sel=%b\tPC_sel=%b\nmem_wr=%b\tdata_to_wr=%h\nmie_wr_flag=%0h\tinterupt_taken=%0h\tmstatus_wr_flag=%0h\tmtvec_wr_flag=%0h\ttimer_inter=%0h\texternal_inter=%0h\nmepc_q=%0d\tmie_q=%0h\tmstatus_q=%0h\tmtvec_q=%0h\tmcause_q=%0h\tmip_q=%0h\nISR_addr=%0b\tcsr_addr=%0h\tepc=%0d\tepc_taken=%0h",
-        DUT.datapath.Fetch.PC, DUT.datapath.flush, DUT.datapath.stall,
+        "rst=%d PC=%0d\tFlush=%0d\tstall=%d\tinstr=%h|\nPC=%0d\tinstr=%h\tx1=%0h\tx2=%0d\tx3=%0h\tA=%h\tB=%h\tforw_a=%0d\tforw_b=%0d|\nPC=%0d\tALU_o=%0h\twb_data=%h\tmem=%d\tregwr=%b\twb_sel=%b\tPC_sel=%b\nmem_wr=%b\tdata_to_wr=%h\nmie_wr_flag=%0h\tinterupt_taken=%0h\tmstatus_wr_flag=%0h\tmtvec_wr_flag=%0h\ttimer_inter=%0h\texternal_inter=%0h\nmepc_q=%0d\tmie_q=%0h\tmstatus_q=%0h\tmtvec_q=%0h\tmcause_q=%0h\tmip_q=%0h\nISR_addr=%0b\tcsr_addr=%0h\tepc=%0d\tepc_taken=%0h",
+        rst, DUT.datapath.Fetch.PC, DUT.datapath.flush, DUT.datapath.stall,
         DUT.datapath.Fetch.instruction, DUT.datapath.Decode_instance.PC,
         DUT.datapath.Decode_instance.instruction,
         DUT.datapath.Decode_instance.Regfile_instance.mem[1],
@@ -55,10 +73,11 @@ module RISC_V_tb;
         DUT.datapath.wb_stage_instance.CSR_reg_instance.epc,
         DUT.datapath.wb_stage_instance.CSR_reg_instance.epc_taken);
     $strobe("ovf", DUT.ovf);
-    $display("\n---------------------------------------------");
+    $strobe("\n---------------------------------------------");
+
   end
   initial begin
-    $dumpfile("wave_RISCV.vcd");
+    $dumpfile("RISC_R_dump.vcd");
     $dumpvars;
   end
 endmodule

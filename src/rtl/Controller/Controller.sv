@@ -7,6 +7,7 @@ module Controller (
     input logic [31:0] instruction,
     input logic br_taken,
     flush,
+    gemm_done,
     output logic [3:0] ALUctrl,
     output logic mem_wr_ppl,
     mem_read_ppl,
@@ -17,6 +18,8 @@ module Controller (
     is_mret_ppl,
     csr_reg_r_ppl,
     csr_reg_wr_ppl,
+    //gemm signals
+    is_GemmInstr_ppl,
     output logic [1:0] wb_sel_ppl
 );
   localparam R_type = 5'b01100;
@@ -29,6 +32,7 @@ module Controller (
   localparam lui_type = 5'b01101;
   localparam auipc_type = 5'b00101;
   localparam csr_type = 5'b11100;
+  localparam GEMM_type = 5'b000010;
   logic [6:0] opcode;
   logic func7, func7_mret, is_mret, csr_reg_r, csr_reg_wr;
   logic [2:0] func3;
@@ -36,9 +40,9 @@ module Controller (
   assign opcode = instruction[6:0];
   assign func7 = instruction[30];
   assign func7_mret = instruction[29];
-
   logic [1:0] wb_sel;
   logic PC_sel, reg_wr, mem_wr, mem_read;
+  logic is_GemmInstr;
   always_comb begin
     case (opcode[6:2])
       R_type: begin
@@ -67,6 +71,7 @@ module Controller (
         csr_reg_r = 1'b0;
         csr_reg_wr = 1'b0;
         is_mret = 1'b0;
+        is_GemmInstr = 1'b0;
       end
       I_type: begin
         casex ({
@@ -95,6 +100,7 @@ module Controller (
         csr_reg_r = 1'b0;
         csr_reg_wr = 1'b0;
         is_mret = 1'b0;
+        is_GemmInstr = 1'b0;
       end
       Load_type: begin
         mem_wr = 0;
@@ -108,6 +114,7 @@ module Controller (
         csr_reg_r = 1'b0;
         csr_reg_wr = 1'b0;
         is_mret = 1'b0;
+        is_GemmInstr = 1'b0;
       end
       S_type: begin
         mem_wr = 1;
@@ -121,6 +128,7 @@ module Controller (
         csr_reg_r = 1'b0;
         csr_reg_wr = 1'b0;
         is_mret = 1'b0;
+        is_GemmInstr = 1'b0;
       end
       B_type: begin
         mem_wr = 0;
@@ -133,6 +141,7 @@ module Controller (
         csr_reg_r = 1'b0;
         csr_reg_wr = 1'b0;
         is_mret = 1'b0;
+        is_GemmInstr = 1'b0;
         case (br_taken)
           0: PC_sel = 0;
           1: PC_sel = 1;
@@ -151,6 +160,7 @@ module Controller (
         csr_reg_r = 1'b0;
         csr_reg_wr = 1'b0;
         is_mret = 1'b0;
+        is_GemmInstr = 1'b0;
       end
       Jalr_type: begin
         mem_wr = 0;
@@ -164,6 +174,7 @@ module Controller (
         csr_reg_r = 1'b0;
         csr_reg_wr = 1'b0;
         is_mret = 1'b0;
+        is_GemmInstr = 1'b0;
       end
       lui_type: begin
         mem_wr = 0;
@@ -177,6 +188,7 @@ module Controller (
         csr_reg_r = 1'b0;
         csr_reg_wr = 1'b0;
         is_mret = 1'b0;
+        is_GemmInstr = 1'b0;
       end
       auipc_type: begin
         mem_wr = 0;
@@ -190,6 +202,7 @@ module Controller (
         csr_reg_r = 1'b0;
         csr_reg_wr = 1'b0;
         is_mret = 1'b0;
+        is_GemmInstr = 1'b0;
       end
       csr_type: begin
         mem_wr = 0;
@@ -200,6 +213,7 @@ module Controller (
         reg_wr = 1'b1;
         ALUctrl = 4'd0;
         PC_sel = 1'b0;
+        is_GemmInstr = 1'b0;
         casex ({
           func7_mret, func3
         })
@@ -220,18 +234,33 @@ module Controller (
           end
         endcase
       end
-      default: begin
-        mem_wr = '0;
+      GEMM_type: begin
+        ALUctrl = 4'bXXXX;
+        A_sel = 1;
+        B_sel = 0;
+        PC_sel = 0;
+        mem_wr = 0;
         mem_read = '0;
-        B_sel = 'x;
-        A_sel = 'x;
-        wb_sel = 'x;
-        reg_wr = '0;
-        ALUctrl = '0;
-        PC_sel = '0;
+        wb_sel = 2'b01;
+        reg_wr = 1'b0;
         csr_reg_r = 1'b0;
         csr_reg_wr = 1'b0;
         is_mret = 1'b0;
+        is_GemmInstr = 1'b1;
+      end
+      default: begin
+        mem_wr = 'x;
+        mem_read = 'x;
+        B_sel = 'x;
+        A_sel = 'x;
+        wb_sel = 'x;
+        reg_wr = 'x;
+        ALUctrl = 'x;
+        PC_sel = 'x;
+        csr_reg_r = 1'bx;
+        csr_reg_wr = 1'bx;
+        is_mret = 1'bx;
+        is_GemmInstr = 1'b0;
       end
     endcase
   end
@@ -307,14 +336,15 @@ module Controller (
       .in(csr_reg_r),
       .out(csr_reg_r_ppl)
   );
+
   Pipeline_reg #(
       .WIDTH(1),
       .reset(0)
-  ) Pipeline_csr_reg_r (
+  ) Pipeline_reg_instance1 (
       .clk(clk),
       .flush(flush),
       .stall(stall),
-      .in(csr_reg_wr),
-      .out(csr_reg_wr_ppl)
+      .in(is_GemmInstr),
+      .out(is_GemmInstr_ppl)
   );
 endmodule

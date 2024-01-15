@@ -1,8 +1,6 @@
-`include "CEP.sv"
 
-module CEP_tb;
+module tb_CEP;
   logic rst, clk, ext_inter, timer_en, counter_clear;
-  logic [3:0] interrupt;
   logic [7:0] ss_sel;
   logic [6:0] no_encoded;
   CEP DUT (
@@ -56,7 +54,7 @@ module CEP_tb;
         DUT.RISC_V_instance.datapath.Decode_instance.forw_a,
         DUT.RISC_V_instance.datapath.Decode_instance.forw_b,
         DUT.RISC_V_instance.datapath.wb_stage_instance.PC, DUT.RISC_V_instance.datapath.ALU_wb,
-        DUT.RISC_V_instance.datapath.wdata,
+        DUT.RISC_V_instance.datapath.wb_data,
         DUT.RISC_V_instance.datapath.wb_stage_instance.data_mem_instance.mem[0],
         DUT.RISC_V_instance.reg_wr, DUT.RISC_V_instance.wb_sel, DUT.RISC_V_instance.PC_sel,
         DUT.RISC_V_instance.mem_wr, DUT.RISC_V_instance.datapath.wb_stage_instance.data_to_mem,
