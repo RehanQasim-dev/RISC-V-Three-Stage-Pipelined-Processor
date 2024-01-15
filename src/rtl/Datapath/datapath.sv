@@ -26,16 +26,17 @@ module datapath (
     output logic [31:0] result,
     data_to_mem,
     rdata1_wb,
-    output logic gemm_valid
+    output logic gemm_valid,
+    output logic [31:0] gemm_instruction;
 );
-  logic [31:0] PC_decode, PC_wb, ALU_wb, wb_data, instruction_wb;
+  logic [31:0] PC_decode, PC_wb, ALU_wb, wb_data ;
   logic [4:0] rs2, rs1, rd_wb;
   logic forw_a, forw_b, flush;
   logic [31:0] epc;
   logic epc_taken, loaded;
   assign rs1 = instruction[19:15];
   assign rs2 = instruction[24:20];
-  assign rd_wb = instruction_wb[11:7];
+  assign rd_wb = gemm_instruction[11:7];
   assign main_flush = flush | rst;
   logic wait_for_gemm;
   Fetch Fetch (
@@ -69,7 +70,7 @@ module datapath (
       .ALU_ppl(ALU_wb),
       .rdata2_forwarded_ppl(data_to_mem),
       .rdata1_forwarded_ppl(rdata1_wb),
-      .instruction_ppl(instruction_wb)
+      .instruction_ppl(gemm_instruction)
   );
 
   wb_stage wb_stage_instance (
@@ -86,7 +87,7 @@ module datapath (
       .rdata1(rdata1_wb),
       .interrupt(interrupt),
       .data_to_mem(data_to_mem),
-      .instruction(instruction_wb),
+      .instruction(gemm_instruction),
       .wb_data(wb_data),
       .epc(epc),
       .epc_taken(epc_taken),

@@ -10,6 +10,7 @@ module RISC_V (
     output logic gemm_valid,
     output logic [31:0] gemm_rdata1,
     gemm_rdata2,
+    gemm_instruction,
     output logic [31:0] result
 );
   logic [31:0] instruction;
@@ -78,7 +79,8 @@ module RISC_V (
       .result(result),
       .data_to_mem(gemm_rdata2),
       .rdata1_wb(gemm_rdata1),
-      .gemm_valid(gemm_valid)
+      .gemm_valid(gemm_valid),
+      .gemm_instruction(gemm_instruction)
   );
   always_comb begin
 
